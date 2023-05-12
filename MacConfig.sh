@@ -6,7 +6,7 @@
 
 
 # Define variables
-PYTHON_VERSION=3.10
+PYTHON_VERSION=3.9
 DATAROOTS_FOLDER=~/DataRoots/RootsAcademy
 GIT_USER_NAME="David"
 GIT_USER_EMAIL="david@dataroots.io"
@@ -32,6 +32,7 @@ BREW_PACKAGES=(
 BREW_CASK_PACKAGES=(
     google-chrome
     slack
+    iterm2
     visual-studio-code
     docker
     azure-data-studio
@@ -64,6 +65,11 @@ mkdir -p $DATAROOTS_FOLDER
 echo "Installing Homebrew..."
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+# Config Homebrew Path
+echo "Config Hombrew Path"
+(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
 
 # Install tools and dependencies
 echo "Installing tools and dependencies..."
@@ -83,8 +89,8 @@ done
 
 echo "Installing pip packages..."
 for package in "${PIP_PACKAGES[@]}"; do
-    if ! python3 -m pip list --format=columns | grep "$package" > /dev/null; then
-        python3 -m pip install "$package"
+    if ! python3 -m pip3 list --format=columns | grep "$package" > /dev/null; then
+        python3 -m pip3 install "$package"
     fi
 done
 
@@ -92,9 +98,9 @@ done
 # Install JupyterHub and JupyterLab
 echo "Installing JupyterHub, JupyterLab, and Configurable HTTP Proxy..."
 sudo apt-get install nodejs npm
-python3 -m pip install jupyterhub
+python3 -m pip3 install jupyterhub
 npm install -g configurable-http-proxy
-python3 -m pip install jupyterlab notebook  # needed if running the notebook servers in the same environment
+python3 -m pip3 install jupyterlab notebook  # needed if running the notebook servers in the same environment
 
 
 # Configure Git
@@ -105,7 +111,14 @@ git config --global color.ui true
 # Gerenate ssh key
 ssh-keygen -t rsa -C $GIT_USER_EMAIL
 # Save ssh key
+echo "Copy this ssh key to your GitHub repository:\n" > ~/.ssh/ssh.txt
 echo "$(cat ~/.ssh/id_rsa.pub)" >> ~/.ssh/ssh.txt
+
+# Configurate zsh terminal
+# Add Visual Studio Code (code)
+echo 'export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"' >> ~/.zprofile
+# Add Docker Desktop for Mac (docker)
+echo 'export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin/"' >> ~/.zprofile
 
 
 # Configure Docker
@@ -146,7 +159,7 @@ done
 # Verify pip packages
 echo "Verifying pip packages..."
 for package in "${PIP_PACKAGES[@]}"; do
-    if ! python3 -m pip list --format=columns | grep "$package" > /dev/null; then
+    if ! python3 -m pip3 list --format=columns | grep "$package" > /dev/null; then
         echo "$package is not installed"
     else
         echo "$package is installed"
@@ -162,6 +175,7 @@ configurable-http-proxy -h
 echo "Verifying Git configuration..."
 echo "User name: $(git config --global user.name)"
 echo "User email: $(git config --global user.email)"
+open .ssh/ssh.txt
 
 # Verify Docker configuration
 echo "Verifying Docker configuration..."
@@ -175,3 +189,11 @@ brew cleanup
 
 # Done
 echo "Done with MacConfig, enjoy!"
+
+# # Additional
+# Install dracula theme
+# git clone https://github.com/dracula/terminal-app.git
+# brew install romkatv/powerlevel10k/powerlevel10k
+# echo "source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
+# exec zsh
+# 1,2,2,2,1,1,2,n,
