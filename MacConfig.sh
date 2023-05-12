@@ -66,9 +66,8 @@ echo "Installing Homebrew..."
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Config Homebrew Path
-echo "Config Hombrew Path"
-(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+echo "Config Hombrew Path..."
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
 
 
 # Install tools and dependencies
@@ -115,6 +114,8 @@ echo "Copy this ssh key to your GitHub repository:\n" > ~/.ssh/ssh.txt
 echo "$(cat ~/.ssh/id_rsa.pub)" >> ~/.ssh/ssh.txt
 
 # Configurate zsh terminal
+# Add alias
+alias ll='ls -l'
 # Add Visual Studio Code (code)
 echo 'export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"' >> ~/.zprofile
 # Add Docker Desktop for Mac (docker)
